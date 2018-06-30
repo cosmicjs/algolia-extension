@@ -7,6 +7,7 @@ import Col from 'reactstrap/lib/Col';
 import Container from 'reactstrap/lib/Container';
 import Row from 'reactstrap/lib/Row';
 
+import IndicesTab from '../../tabs/Indices';
 import KeysTab from '../../tabs/Keys';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Tabs from '../../components/Tabs';
@@ -19,6 +20,7 @@ const getTab = (tabValue) => {
     case 0:
       return <KeysTab />;
     case 1:
+      return <IndicesTab />;
     case 2:
     case 3:
     default:
@@ -81,8 +83,13 @@ IndexPage.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { indices, settings } = state;
-  const isLoading = indices.isLoading || settings.isLoading;
+  const {
+    indices,
+    objectTypes,
+    settings,
+  } = state;
+  const isLoading = indices.isLoading || objectTypes.isLoading
+    || settings.isLoading;
 
   return { isLoading };
 };

@@ -1,11 +1,9 @@
 import { actionTypes } from './actions';
 
 const {
-  CATCH_INDICES_ERROR,
-  RECEIVE_INDICES,
-  REQUEST_INDICES,
-  START_SYNC,
-  FINISH_SYNC,
+  CATCH_OBJECT_TYPES_ERROR,
+  RECEIVE_OBJECT_TYPES,
+  REQUEST_OBJECT_TYPES,
 } = actionTypes;
 
 const defaultState = {
@@ -18,7 +16,7 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
   switch (action.type) {
-    case CATCH_INDICES_ERROR:
+    case CATCH_OBJECT_TYPES_ERROR:
       return {
         ...state,
         data: undefined,
@@ -26,29 +24,19 @@ export default (state = defaultState, action) => {
         finishedLoadAt: Date.now(),
         isLoading: false,
       };
-    case RECEIVE_INDICES:
+    case RECEIVE_OBJECT_TYPES:
       return {
         ...state,
-        data: action.indices,
+        data: action.objectTypes,
         error: undefined,
         finishedLoadAt: Date.now(),
         isLoading: false,
       };
-    case REQUEST_INDICES:
+    case REQUEST_OBJECT_TYPES:
       return {
         ...state,
         isLoading: true,
         startedLoadAt: Date.now(),
-      };
-    case START_SYNC:
-      return {
-        ...state,
-        isLoading: true,
-      };
-    case FINISH_SYNC:
-      return {
-        ...state,
-        isLoading: false,
       };
     default:
       return state;

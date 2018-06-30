@@ -1,9 +1,13 @@
 import algoliasearch from 'algoliasearch';
+import convertCosmicObjToAlgoliaObj from '../../utils/convertCosmicObjToAlgoliaObj';
+import getBucket from '../../utils/getBucket';
 
 const actionTypes = {
   CATCH_INDICES_ERROR: 'CATCH_INDICES_ERROR',
   RECEIVE_INDICES: 'RECEIVE_INDICES',
   REQUEST_INDICES: 'REQUEST_INDICES',
+  START_SYNC: 'START_SYNC',
+  FINISH_SYNC: 'FINISH_SYNC',
 };
 
 const catchIndicesError = (error) => {
@@ -25,23 +29,85 @@ const requestIndices = () => ({
   type: actionTypes.REQUEST_INDICES,
 });
 
+const startSync = () => ({
+  type: actionTypes.START_SYNC,
+});
+
+const finishSync = () => ({
+  type: actionTypes.FINISH_SYNC,
+});
+
 const fetchIndices = (applicationId, adminApiKey) => async (dispatch) => {
   dispatch(requestIndices());
 
   try {
     const client = algoliasearch(applicationId, adminApiKey);
-
     const data = await client.listIndexes();
-
     const { items } = data;
+    const indices = (await Promise.all(items.map(async (item) => {
+      const { name } = item;
+      const index = client.initIndex(name);
+      const settings = await index.getSettings();
+      return {
+        name,
+        ...settings,
+        ...item,
+      };
+    })))
+      .reduce((accumulator, indexSettings) => ({
+        ...accumulator,
+        [indexSettings.name]: indexSettings,
+      }), {});
 
-    return dispatch(receiveIndices(items));
+    return dispatch(receiveIndices(indices));
   } catch (e) {
     return dispatch(catchIndicesError(e));
   }
 };
 
+const syncIndex = index => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const bucket = getBucket();
+    const data = await bucket.getObjects({ type: index });
+    const objects = data.objects.map(convertCosmicObjToAlgoliaObj);
+
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const addObjectsRes = await algoliaIndex.addObjects(objects);
+    const { taskID } = addObjectsRes;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
+const removeIndex = index => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const res = await client.deleteIndex(index);
+    const { taskID } = res;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
 export {
   actionTypes,
   fetchIndices,
+  removeIndex,
+  syncIndex,
 };
