@@ -7,11 +7,13 @@ import Col from 'reactstrap/lib/Col';
 import Container from 'reactstrap/lib/Container';
 import Row from 'reactstrap/lib/Row';
 
+import AutomaticSyncingTab from '../../tabs/AutomaticSyncing';
 import IndicesTab from '../../tabs/Indices';
 import KeysTab from '../../tabs/Keys';
 import PreviewTab from '../../tabs/Preview';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Tabs from '../../components/Tabs';
+import AlgoliaIcon from '../../assets/svg/search-by-algolia.svg';
 import { fetchSettings } from '../../state/settings/actions';
 import withRoot from '../../components/withRoot';
 import styles from './styles';
@@ -23,6 +25,7 @@ const getTab = (tabValue) => {
     case 1:
       return <IndicesTab />;
     case 2:
+      return <AutomaticSyncingTab />;
     case 3:
       return <PreviewTab />;
     default:
@@ -56,10 +59,13 @@ class IndexPage extends Component {
     return (
       <Container className={classes.root}>
         <Row>
-          <Col xs={{ size: 12 }}>
+          <Col>
             <h1 className={classes.h1}>
               Algolia Search
             </h1>
+          </Col>
+          <Col xs={{ order: 12 }}>
+            <AlgoliaIcon className={classes.icon} />
           </Col>
         </Row>
         <Row>

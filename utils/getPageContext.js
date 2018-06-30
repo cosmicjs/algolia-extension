@@ -1,29 +1,19 @@
 /* eslint-disable no-underscore-dangle */
-/* source: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/src/getPageContext.js */
-/* eslint-disable no-underscore-dangle */
 
 import { SheetsRegistry } from 'jss';
 import { createMuiTheme, createGenerateClassName } from '@material-ui/core/styles';
-// import blue from '@material-ui/core/colors/blue';
-import red from '@material-ui/core/colors/red';
 
-// A theme with custom primary and secondary color.
-// It's optional.
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: '#F5F7F9', // to match Cosmic JS Dashboard
+      default: '#F5F7F9', // Cosmic JS Dashboard bacground
     },
     primary: {
       contrastText: '#fff',
-      // light: blue[300],
-      main: '#29ABE2',
-      // dark: blue[700],
+      main: '#29ABE2', // Cosmic JS blue
     },
     secondary: {
-      light: red[300],
-      main: red[500],
-      dark: red[700],
+      main: '#5468ff', // Algolia purple
     },
     text: {
       primary: 'rgba(102, 102, 102)',

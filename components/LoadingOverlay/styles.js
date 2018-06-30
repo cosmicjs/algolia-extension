@@ -1,6 +1,6 @@
 export default theme => ({
   dot: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     borderRadius: '100%',
     display: 'inline-block',
     height: '60%',

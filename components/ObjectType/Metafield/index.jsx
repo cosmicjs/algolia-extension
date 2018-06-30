@@ -77,7 +77,7 @@ class Metafield extends Component {
               control={
                 <Switch
                   classes={{ root: classes.toggle }}
-                  color="secondary"
+                  color="primary"
                   onChange={this.handleSearchableToggle}
                   checked={isSearchable}
                 />
@@ -89,7 +89,7 @@ class Metafield extends Component {
               control={
                 <Switch
                   classes={{ root: classes.toggle }}
-                  color="secondary"
+                  color="primary"
                   onChange={this.handleFacetToggle}
                   checked={isFacet}
                 />
