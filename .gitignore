@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+.env*
+
+cosmic-algolia-extension.zip
+
+.DS_Store

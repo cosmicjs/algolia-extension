@@ -1,0 +1,52 @@
+{
+  "env": {
+    "development": {
+      "presets": [
+        [
+          "next/babel",
+          {
+            "styled-jsx": {
+              "plugins": [
+                "styled-jsx-plugin-sass"
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "production": {
+      "presets": [
+        [
+          "next/babel",
+          {
+            "styled-jsx": {
+              "plugins": [
+                "styled-jsx-plugin-sass"
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    "test": {
+      "presets": [
+        [
+          "next/babel",
+          {
+            "preset-env": {
+              "modules": "commonjs"
+            },
+            "styled-jsx": {
+              "plugins": [
+                "styled-jsx-plugin-sass"
+              ]
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "plugins": [
+    "inline-react-svg"
+  ]
+}
