@@ -2,10 +2,12 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
 
-const placeholder = () => null;
+import indices from './indices/reducer';
+import settings from './settings/reducer';
 
 const rootReducer = combineReducers({
-  placeholder,
+  indices,
+  settings,
 });
 
 const initializeStore = (initialState = {}) => createStore(
