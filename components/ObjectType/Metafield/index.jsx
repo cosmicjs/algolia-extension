@@ -8,7 +8,9 @@ import Row from 'reactstrap/lib/Row';
 import Switch from '@material-ui/core/Switch';
 
 import {
+  addFacetAttribute,
   addSearchableAttribute,
+  removeFacetAttribute,
   removeSearchableAttribute,
 } from '../../../state/indices/actions';
 
@@ -22,6 +24,14 @@ class Metafield extends Component {
 
   handleFacetToggle(event) {
     event.preventDefault();
+    const { checked } = event.target;
+    const { cosmicKey, dispatch, slug } = this.props;
+
+    if (checked) {
+      dispatch(addFacetAttribute(slug, cosmicKey));
+    } else {
+      dispatch(removeFacetAttribute(slug, cosmicKey));
+    }
   }
 
   handleSearchableToggle(event) {
@@ -71,7 +81,7 @@ class Metafield extends Component {
               control={
                 <Switch
                   color="secondary"
-                  onChange={this.handleSearchableToggle}
+                  onChange={this.handleFacetToggle}
                   checked={isFacet}
                 />
               }

@@ -152,11 +152,59 @@ const removeSearchableAttribute = (index, attribute) => async (dispatch, getStat
   return dispatch(finishSync());
 };
 
+const addFacetAttribute = (index, attribute) => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const getSettingsRes = await algoliaIndex.getSettings();
+    const attributesForFaceting = (getSettingsRes && getSettingsRes.attributesForFaceting) || [];
+    const newAttributes = uniq([...attributesForFaceting, attribute]);
+    const setSettingsRes = await algoliaIndex.setSettings({
+      attributesForFaceting: newAttributes,
+    });
+    const { taskID } = setSettingsRes;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
+const removeFacetAttribute = (index, attribute) => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const getSettingsRes = await algoliaIndex.getSettings();
+    const attributesForFaceting = (getSettingsRes && getSettingsRes.attributesForFaceting) || [];
+    const newAttributes = attributesForFaceting.filter(name => name !== attribute);
+    const setSettingsRes = await algoliaIndex.setSettings({
+      attributesForFaceting: newAttributes,
+    });
+    const { taskID } = setSettingsRes;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
 export {
   actionTypes,
+  addFacetAttribute,
   addSearchableAttribute,
   fetchIndices,
   removeIndex,
+  removeFacetAttribute,
   removeSearchableAttribute,
   syncIndex,
 };
