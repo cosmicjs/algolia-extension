@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { withStyles } from '@material-ui/core/styles';
 import Col from 'reactstrap/lib/Col';
 import Container from 'reactstrap/lib/Container';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Row from 'reactstrap/lib/Row';
 import Switch from '@material-ui/core/Switch';
+
+import styles from './styles';
 
 import {
   addFacetAttribute,
@@ -48,6 +52,7 @@ class Metafield extends Component {
 
   render() {
     const {
+      classes,
       cosmicKey,
       indices,
       slug,
@@ -63,13 +68,15 @@ class Metafield extends Component {
     return (
       <Container>
         <Row>
-          <Col>
+          <Col className={classes.col}>
             {title}
           </Col>
-          <Col>
+          <Col className={classes.col} xs={{ position: 12 }}>
             <FormControlLabel
+              clases={{ root: classes.formControlLabel }}
               control={
                 <Switch
+                  classes={{ root: classes.toggle }}
                   color="secondary"
                   onChange={this.handleSearchableToggle}
                   checked={isSearchable}
@@ -78,8 +85,10 @@ class Metafield extends Component {
               label="Searchable"
             />
             <FormControlLabel
+              clases={{ root: classes.formControlLabel }}
               control={
                 <Switch
+                  classes={{ root: classes.toggle }}
                   color="secondary"
                   onChange={this.handleFacetToggle}
                   checked={isFacet}
@@ -99,6 +108,7 @@ Metafield.defaultProps = {
 };
 
 Metafield.propTypes = {
+  classes: PropTypes.object.isRequired,
   cosmicKey: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   indices: PropTypes.object,
@@ -110,4 +120,7 @@ const mapStateToProps = state => ({
   indices: state.indices && state.indices.data,
 });
 
-export default connect(mapStateToProps)(Metafield);
+export default compose(
+  withStyles(styles),
+  connect(mapStateToProps),
+)(Metafield);

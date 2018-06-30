@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Col from 'reactstrap/lib/Col';
+import Divider from '@material-ui/core/Divider';
 import Row from 'reactstrap/lib/Row';
 
 import Metafield from './Metafield';
@@ -47,14 +48,15 @@ class ObjectType extends Component {
 
     return (
       <Fragment>
-        <Row className={classes.root}>
-          <Col>
-            <h2>{title}</h2>
+        <Row className={classes.heading} >
+          <Col className={classes.col}>
+            <h2 className={classes.h2}>{title}</h2>
           </Col>
-          <Col>
+          <Col className={classes.col} xs={{ position: 12 }}>
             {
               !isIndexed &&
               <Button
+                className={classes.button}
                 color="primary"
                 onClick={this.handleSyncNowClick}
                 variant="raised"
@@ -66,13 +68,14 @@ class ObjectType extends Component {
               isIndexed &&
               <Fragment>
                 <Button
-                  color="secondary"
+                  className={classes.button}
                   onClick={this.handleRemoveClick}
                   variant="flat"
                 >
                   Remove
                 </Button>
                 <Button
+                  className={classes.button}
                   color="primary"
                   onClick={this.handleSyncNowClick}
                   variant="raised"
@@ -83,16 +86,18 @@ class ObjectType extends Component {
             }
           </Col>
         </Row>
-        <Row>
+        <Row className={classes.metafields}>
           <Col>
             {
               metafields && metafields.map(metafield => (
-                <Metafield
-                  {...metafield}
-                  cosmicKey={metafield.key}
-                  key={metafield.key}
-                  slug={slug}
-                />
+                <Fragment key={metafield.key}>
+                  <Metafield
+                    {...metafield}
+                    cosmicKey={metafield.key}
+                    slug={slug}
+                  />
+                  <Divider light />
+                </Fragment>
               ))
             }
             {
