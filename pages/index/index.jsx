@@ -9,6 +9,7 @@ import Row from 'reactstrap/lib/Row';
 
 import IndicesTab from '../../tabs/Indices';
 import KeysTab from '../../tabs/Keys';
+import PreviewTab from '../../tabs/Preview';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Tabs from '../../components/Tabs';
 import { fetchSettings } from '../../state/settings/actions';
@@ -23,6 +24,7 @@ const getTab = (tabValue) => {
       return <IndicesTab />;
     case 2:
     case 3:
+      return <PreviewTab />;
     default:
       return <KeysTab />;
   }

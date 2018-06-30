@@ -88,6 +88,12 @@ class ObjectType extends Component {
         </Row>
         <Row className={classes.metafields}>
           <Col>
+            <Metafield
+              cosmicKey="title"
+              key="title"
+              slug={slug}
+              title="Title"
+            />
             {
               metafields && metafields.map(metafield => (
                 <Fragment key={metafield.key}>
@@ -103,9 +109,8 @@ class ObjectType extends Component {
             {
               options && options.content_editor &&
               <Metafield
-                isOption
-                cosmicKey="content_editor"
-                key="content_editor"
+                cosmicKey="content"
+                key="content"
                 slug={slug}
                 title="Content"
               />
