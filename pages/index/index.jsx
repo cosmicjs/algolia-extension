@@ -8,6 +8,7 @@ import Container from 'reactstrap/lib/Container';
 import Row from 'reactstrap/lib/Row';
 
 import KeysTab from '../../tabs/Keys';
+import LoadingOverlay from '../../components/LoadingOverlay';
 import Tabs from '../../components/Tabs';
 import { fetchSettings } from '../../state/settings/actions';
 import withRoot from '../../components/withRoot';
@@ -45,7 +46,7 @@ class IndexPage extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isLoading } = this.props;
     const { tabValue } = this.state;
 
     return (
@@ -63,18 +64,31 @@ class IndexPage extends Component {
           </Col>
         </Row>
         {getTab(tabValue)}
+        <LoadingOverlay visible={isLoading} />
       </Container>
     );
   }
 }
 
+IndexPage.defaultProps = {
+  isLoading: false,
+};
+
 IndexPage.propTypes = {
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => {
+  const { indices, settings } = state;
+  const isLoading = indices.isLoading || settings.isLoading;
+
+  return { isLoading };
 };
 
 export default compose(
   withRoot,
   withStyles(styles),
-  connect(),
+  connect(mapStateToProps),
 )(IndexPage);
