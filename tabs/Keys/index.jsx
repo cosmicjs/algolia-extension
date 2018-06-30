@@ -11,7 +11,7 @@ import Input from 'reactstrap/lib/Input';
 import Label from 'reactstrap/lib/Label';
 import Row from 'reactstrap/lib/Row';
 
-import { fetchIndices } from '../../state/indices/actions';
+import { setSettings } from '../../state/settings/actions';
 import styles from './styles';
 
 class KeysTab extends Component {
@@ -52,7 +52,10 @@ class KeysTab extends Component {
 
     const { applicationIdInput, adminApiKeyInput } = this.state;
 
-    this.props.dispatch(fetchIndices(applicationIdInput, adminApiKeyInput));
+    this.props.dispatch(setSettings({
+      adminApiKey: adminApiKeyInput,
+      applicationId: applicationIdInput,
+    }));
   }
 
   render() {

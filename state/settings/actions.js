@@ -1,3 +1,4 @@
+import { fetchIndices } from '../indices/actions';
 import getBucket from '../../utils/getBucket';
 
 const actionTypes = {
@@ -42,7 +43,46 @@ const fetchSettings = () => async (dispatch) => {
     settings.adminApiKey = data[1] && data[1].object && data[1].object.content;
     settings.webhooks = JSON.parse((data[2] && data[2].object && data[2].object.content) || '[]');
 
-    return dispatch(receiveSettings(settings));
+    await dispatch(receiveSettings(settings));
+    return dispatch(fetchIndices(settings.applicationId, settings.adminApiKey));
+  } catch (e) {
+    return dispatch(catchSettingsError(e));
+  }
+};
+
+const setSettings = settings => async (dispatch) => {
+  try {
+    const bucket = getBucket();
+
+    return Promise.all(Object.keys(settings).map((async (settingName) => {
+      const cosmicObject = { type_slug: 'algolia-info' };
+
+      switch (settingName) {
+        case 'applicationId':
+          cosmicObject.content = settings[settingName] || '';
+          cosmicObject.slug = 'algolia-info-application-id';
+          cosmicObject.title = 'Application ID';
+          break;
+        case 'adminApiKey':
+          cosmicObject.content = settings[settingName] || '';
+          cosmicObject.slug = 'algolia-info-admin-api-key';
+          cosmicObject.title = 'Admin API Key';
+          break;
+        default:
+          if (process.env.NODE_ENV !== 'production') {
+            // eslint-disable-next-line no-console
+            console.log(`${settings} not implemented yet`);
+          }
+          return Promise.resolve();
+      }
+
+      try {
+        await bucket.editObject(cosmicObject);
+      } catch (e) {
+        await bucket.addObject(cosmicObject);
+      }
+      return dispatch(fetchSettings());
+    })));
   } catch (e) {
     return dispatch(catchSettingsError(e));
   }
@@ -51,4 +91,5 @@ const fetchSettings = () => async (dispatch) => {
 export {
   actionTypes,
   fetchSettings,
+  setSettings,
 };
