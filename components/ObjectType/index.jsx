@@ -87,12 +87,23 @@ class ObjectType extends Component {
           <Col>
             {
               metafields && metafields.map(metafield => (
-                <Metafield {...metafield} key={metafield.key} />
+                <Metafield
+                  {...metafield}
+                  cosmicKey={metafield.key}
+                  key={metafield.key}
+                  slug={slug}
+                />
               ))
             }
             {
               options && options.content_editor &&
-              <Metafield isOption key="content_editor" title="Content" />
+              <Metafield
+                isOption
+                cosmicKey="content_editor"
+                key="content_editor"
+                slug={slug}
+                title="Content"
+              />
             }
           </Col>
         </Row>

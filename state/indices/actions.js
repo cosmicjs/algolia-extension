@@ -1,4 +1,5 @@
 import algoliasearch from 'algoliasearch';
+import uniq from 'lodash/uniq';
 import convertCosmicObjToAlgoliaObj from '../../utils/convertCosmicObjToAlgoliaObj';
 import getBucket from '../../utils/getBucket';
 
@@ -105,9 +106,57 @@ const removeIndex = index => async (dispatch, getState) => {
   return dispatch(finishSync());
 };
 
+const addSearchableAttribute = (index, attribute) => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const getSettingsRes = await algoliaIndex.getSettings();
+    const attributesToIndex = (getSettingsRes && getSettingsRes.attributesToIndex) || [];
+    const newAttributes = uniq([...attributesToIndex, attribute]);
+    const setSettingsRes = await algoliaIndex.setSettings({
+      attributesToIndex: newAttributes,
+    });
+    const { taskID } = setSettingsRes;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
+const removeSearchableAttribute = (index, attribute) => async (dispatch, getState) => {
+  dispatch(startSync());
+
+  try {
+    const { applicationId, adminApiKey } = getState().settings.data;
+    const client = algoliasearch(applicationId, adminApiKey);
+    const algoliaIndex = client.initIndex(index);
+    const getSettingsRes = await algoliaIndex.getSettings();
+    const attributesToIndex = (getSettingsRes && getSettingsRes.attributesToIndex) || [];
+    const newAttributes = attributesToIndex.filter(name => name !== attribute);
+    const setSettingsRes = await algoliaIndex.setSettings({
+      attributesToIndex: newAttributes,
+    });
+    const { taskID } = setSettingsRes;
+    await algoliaIndex.waitTask(taskID);
+    await dispatch(fetchIndices(applicationId, adminApiKey));
+  } catch (e) {
+    await dispatch(catchIndicesError(e));
+  }
+
+  return dispatch(finishSync());
+};
+
 export {
   actionTypes,
+  addSearchableAttribute,
   fetchIndices,
   removeIndex,
+  removeSearchableAttribute,
   syncIndex,
 };
