@@ -4,6 +4,8 @@ const {
   CATCH_SETTINGS_ERROR,
   RECEIVE_SETTINGS,
   REQUEST_SETTINGS,
+  START_SETTINGS_LOAD,
+  FINISH_SETTINGS_LOAD,
 } = actionTypes;
 
 const defaultState = {
@@ -36,6 +38,18 @@ export default (state = defaultState, action) => {
         ...state,
         isLoading: true,
         startedLoadAt: Date.now(),
+      };
+    case START_SETTINGS_LOAD:
+      return {
+        ...state,
+        isLoading: true,
+        startedLoadAt: Date.now(),
+      };
+    case FINISH_SETTINGS_LOAD:
+      return {
+        ...state,
+        finishedLoadAt: Date.now(),
+        isLoading: false,
       };
     default:
       return state;
