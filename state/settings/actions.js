@@ -49,6 +49,7 @@ const fetchSettings = () => async (dispatch) => {
       bucket.getObject({ slug: 'algolia-info-application-id' }).catch(() => undefined),
       bucket.getObject({ slug: 'algolia-info-admin-api-key' }).catch(() => undefined),
       bucket.getObject({ slug: 'algolia-info-webhooks' }).catch(() => undefined),
+      bucket.getObject({ slug: 'algolia-info-bucket-id' }).catch(() => undefined),
     ]);
 
     const settings = {};
@@ -56,6 +57,7 @@ const fetchSettings = () => async (dispatch) => {
     settings.applicationId = data[0] && data[0].object && data[0].object.content;
     settings.adminApiKey = data[1] && data[1].object && data[1].object.content;
     settings.webhooks = JSON.parse((data[2] && data[2].object && data[2].object.content) || '{}');
+    settings.bucketId = data[3] && data[3].object && data[3].object.content;
 
     await dispatch(receiveSettings(settings));
     return dispatch(fetchIndices(settings.applicationId, settings.adminApiKey));
@@ -82,6 +84,11 @@ const setSettings = settings => async (dispatch) => {
           cosmicObject.slug = 'algolia-info-admin-api-key';
           cosmicObject.title = 'Admin API Key';
           break;
+        case 'bucketId':
+          cosmicObject.content = settings[settingName] || '';
+          cosmicObject.slug = 'algolia-info-bucket-id';
+          cosmicObject.title = 'Bucket ID';
+          break;
         default:
           if (process.env.NODE_ENV !== 'production') {
             // eslint-disable-next-line no-console
@@ -102,14 +109,14 @@ const setSettings = settings => async (dispatch) => {
   }
 };
 
-const removeWebhooks = () => async (dispatch) => {
+const removeWebhooks = () => async (dispatch, getState) => {
   dispatch(startSettingsLoad());
 
   try {
     const bucket = getBucket();
 
-    // TODO remove this hard-coded value
-    await fetch(`${WEBHOOK_API_ENDPOINT}/api/removeBucketSlug/5b35b031330f0937ae232f31`, {
+    const { bucketId } = getState().settings.data;
+    await fetch(`${WEBHOOK_API_ENDPOINT}/api/removeBucketSlug/${bucketId}`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -153,7 +160,7 @@ const removeWebhooks = () => async (dispatch) => {
   return dispatch(finishSettingsLoad());
 };
 
-const addWebhooks = () => async (dispatch) => {
+const addWebhooks = () => async (dispatch, getState) => {
   dispatch(startSettingsLoad());
 
   try {
@@ -191,10 +198,11 @@ const addWebhooks = () => async (dispatch) => {
       await bucket.addObject(webhooksObject);
     }
 
+    const { bucketId } = getState().settings.data;
+
     await fetch(`${WEBHOOK_API_ENDPOINT}/api/addBucketSlug`, {
       body: JSON.stringify({
-        // TODO remove this hard-coded value
-        id: '5b35b031330f0937ae232f31',
+        id: bucketId,
         slug: queryString.parse(window.location.search).bucket_slug,
       }),
       headers: {

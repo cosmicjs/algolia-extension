@@ -5,17 +5,34 @@ import { compose } from 'recompose';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Col from 'reactstrap/lib/Col';
+import Input from 'reactstrap/lib/Input';
+import Label from 'reactstrap/lib/Label';
 import Row from 'reactstrap/lib/Row';
+import queryString from 'query-string';
 
-import { addWebhooks, removeWebhooks } from '../../state/settings/actions';
+import {
+  addWebhooks,
+  removeWebhooks,
+  setSettings,
+} from '../../state/settings/actions';
 import styles from './styles';
 
 class AutomaticSyncingTab extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      bucketIdInput: props.bucketId,
+    };
+
+    this.handleChange = this.handleChange.bind(this);
     this.handleDisableSyncingClick = this.handleDisableSyncingClick.bind(this);
     this.handleEnableSyncingClick = this.handleEnableSyncingClick.bind(this);
+  }
+
+  handleChange(event) {
+    const bucketIdInput = event.target.value;
+    this.setState({ bucketIdInput });
   }
 
   handleDisableSyncingClick(event) {
@@ -24,14 +41,19 @@ class AutomaticSyncingTab extends Component {
     dispatch(removeWebhooks());
   }
 
-  handleEnableSyncingClick(event) {
+  async handleEnableSyncingClick(event) {
     event.preventDefault();
     const { dispatch } = this.props;
+    await dispatch(setSettings({ bucketId: this.state.bucketIdInput }));
     dispatch(addWebhooks());
   }
 
   render() {
     const { classes, webhooksAdded } = this.props;
+    const { bucketIdInput } = this.state;
+
+    const bucketSlug = typeof window !== 'undefined'
+      && queryString.parse(window.location.search).bucket_slug;
 
     return (
       <Fragment>
@@ -41,56 +63,99 @@ class AutomaticSyncingTab extends Component {
             md={{ offset: 1, size: 10 }}
           >
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-              in culpa qui officia deserunt mollit anim id est laborum.
+              Enter your Cosmic JS&nbsp;
+              {
+                bucketSlug
+                  ? (
+                    <a
+                      href={`https://cosmicjs.com/${bucketSlug}/settings/main`}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Bucket ID
+                    </a>
+                  )
+                  : 'Bucket ID'
+              }
+              &nbsp;below and click &apos;Enable Automatic
+              Syncing&apos; below to update Algolia whenever you add or edit a
+              Cosmic JS Object.
             </p>
           </Col>
         </Row>
-        <Row className={classes.buttonRow}>
+        <Row className={classes.inputRow}>
+          <Col xs={{ size: 'auto' }}>
+            <Label className={classes.label} for="bucket-id">Bucket ID</Label>
+          </Col>
           <Col>
-            {
-              !webhooksAdded &&
+            <Input
+              id="bucket-id"
+              name="bucketId"
+              onChange={this.handleChange}
+              placeholder="Cosmic JS Bucket ID"
+              type="text"
+              value={bucketIdInput}
+            />
+          </Col>
+        </Row>
+        {
+          webhooksAdded &&
+          <Row>
+            <Col>
+              <p className={classes.p}>
+                You have already enabled automatic syncing.
+              </p>
+            </Col>
+          </Row>
+        }
+        {
+          webhooksAdded &&
+          <Row className={classes.buttonRow}>
+            <Col>
               <Button
+                className={classes.button}
+                onClick={this.handleDisableSyncingClick}
+                variant="raised"
+              >
+                Disable Automatic Syncing
+              </Button>
+            </Col>
+          </Row>
+        }
+        {
+          !webhooksAdded &&
+          <Row className={classes.buttonRow}>
+            <Col>
+              <Button
+                className={classes.button}
                 color="primary"
                 onClick={this.handleEnableSyncingClick}
                 variant="raised"
               >
                 Enable Automatic Syncing
               </Button>
-            }
-            {
-              webhooksAdded &&
-              <Fragment>
-                <p>
-                  You have already enabled automatic syncing.
-                </p>
-                <Button
-                  onClick={this.handleDisableSyncingClick}
-                  variant="raised"
-                >
-                  Disable Automatic Syncing
-                </Button>
-              </Fragment>
-            }
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        }
       </Fragment>
     );
   }
 }
 
+AutomaticSyncingTab.defaultProps = {
+  bucketId: '',
+};
+
 AutomaticSyncingTab.propTypes = {
+  bucketId: PropTypes.string,
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   webhooksAdded: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
+  bucketId: state.settings && state.settings.data
+    && state.settings.data.bucketId,
   webhooksAdded: Boolean(state.settings && state.settings.data
     && state.settings.data.webhooks
     && !!Object.keys(state.settings.data.webhooks).length),
