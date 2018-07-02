@@ -37,6 +37,7 @@ class Tabs extends Component {
           <Tab label="Indices" disabled={!algoliaIsConnected} />
           <Tab label="Automatic Syncing" disabled={!algoliaIsConnected} />
           <Tab label="Preview" disabled={!algoliaIsConnected} />
+          <Tab label="Help" />
         </MaterialTabs>
         <Divider light />
       </Fragment>

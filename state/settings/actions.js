@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-fetch';
+import queryString from 'query-string';
 import { fetchIndices } from '../indices/actions';
 import getBucket from '../../utils/getBucket';
 
@@ -106,6 +108,14 @@ const removeWebhooks = () => async (dispatch) => {
   try {
     const bucket = getBucket();
 
+    // TODO remove this hard-coded value
+    await fetch(`${WEBHOOK_API_ENDPOINT}/api/removeBucketSlug/5b35b031330f0937ae232f31`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+
     let webhookRes;
     try {
       webhookRes = await bucket.getObject({ slug: 'algolia-info-webhooks' });
@@ -134,6 +144,7 @@ const removeWebhooks = () => async (dispatch) => {
     } catch (e) {
       await bucket.addObject(webhooksObject);
     }
+
     await dispatch(fetchSettings());
   } catch (e) {
     await dispatch(catchSettingsError(e));
@@ -179,6 +190,19 @@ const addWebhooks = () => async (dispatch) => {
     } catch (e) {
       await bucket.addObject(webhooksObject);
     }
+
+    await fetch(`${WEBHOOK_API_ENDPOINT}/api/addBucketSlug`, {
+      body: JSON.stringify({
+        // TODO remove this hard-coded value
+        id: '5b35b031330f0937ae232f31',
+        slug: queryString.parse(window.location.search).bucket_slug,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+
     await dispatch(fetchSettings());
   } catch (e) {
     await dispatch(catchSettingsError(e));

@@ -8,6 +8,7 @@ import Container from 'reactstrap/lib/Container';
 import Row from 'reactstrap/lib/Row';
 
 import AutomaticSyncingTab from '../../tabs/AutomaticSyncing';
+import HelpTab from '../../tabs/Help';
 import IndicesTab from '../../tabs/Indices';
 import KeysTab from '../../tabs/Keys';
 import PreviewTab from '../../tabs/Preview';
@@ -28,6 +29,8 @@ const getTab = (tabValue) => {
       return <AutomaticSyncingTab />;
     case 3:
       return <PreviewTab />;
+    case 4:
+      return <HelpTab />;
     default:
       return <KeysTab />;
   }
