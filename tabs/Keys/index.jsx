@@ -59,7 +59,7 @@ class KeysTab extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, indicesError } = this.props;
     const { adminApiKeyInput, applicationIdInput } = this.state;
 
     return (
@@ -96,6 +96,12 @@ class KeysTab extends Component {
             >
               Submit
             </Button>
+            {
+              indicesError &&
+              <p className={classes.error}>
+                Error connecting to Algolia. Please check your input and retry.
+              </p>
+            }
           </Form>
         </Col>
       </Row>
@@ -106,6 +112,7 @@ class KeysTab extends Component {
 KeysTab.defaultProps = {
   adminApiKey: '',
   applicationId: '',
+  indicesError: undefined,
 };
 
 KeysTab.propTypes = {
@@ -113,6 +120,7 @@ KeysTab.propTypes = {
   applicationId: PropTypes.string,
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  indicesError: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
@@ -120,6 +128,7 @@ const mapStateToProps = state => ({
     && state.settings.data.adminApiKey,
   applicationId: state.settings && state.settings.data
     && state.settings.data.applicationId,
+  indicesError: state.indices.error,
 });
 
 export default compose(

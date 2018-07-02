@@ -14,7 +14,7 @@ export default theme => ({
   },
   root: {
     alignItems: 'center',
-    backgroundColor: 'rgba(245, 247, 249, 0.5)',
+    backgroundColor: theme.palette.background30,
     bottom: 0,
     display: 'flex',
     height: '100%',

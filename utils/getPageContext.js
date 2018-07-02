@@ -6,7 +6,10 @@ import { createMuiTheme, createGenerateClassName } from '@material-ui/core/style
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: '#F5F7F9', // Cosmic JS Dashboard bacground
+      // default: '#F5F7F9', // Cosmic JS Dashboard bacground
+      // default30: 'rgba(245, 247, 249, 0.3)',
+      default: '#FFF',
+      default30: 'rgba(255, 255, 255, 0.3)',
     },
     primary: {
       contrastText: '#fff',
