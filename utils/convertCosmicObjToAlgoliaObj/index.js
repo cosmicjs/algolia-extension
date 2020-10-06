@@ -7,6 +7,10 @@ import parsePlainTextArea from './parsePlainTextArea';
 import parseRadioButtons from './parseRadioButtons';
 import parseSelectDropdown from './parseSelectDropdown';
 import parseText from './parseText';
+import parseSwitch from './parseSwitch';
+import parseNumber from './parseNumber';
+import parseCheckBoxes from './parseCheckBoxes';
+import parseMarkdown from './parseMarkdown';
 
 export default (cosmicObject) => {
   const {
@@ -57,6 +61,18 @@ export default (cosmicObject) => {
         break;
       case 'objects':
         algoliaObject[metafield.key] = parseObjects(metafield);
+        break;
+      case 'switch':
+        algoliaObject[metafield.key] = parseSwitch(metafield);
+        break;
+      case 'number':
+        algoliaObject[metafield.key] = parseNumber(metafield);
+        break;
+      case 'check-boxes':
+        algoliaObject[metafield.key] = parseCheckBoxes(metafield);
+        break;
+      case 'markdown':
+        algoliaObject[metafield.key] = parseMarkdown(metafield);
         break;
       default:
         if (process.env.NODE_ENV !== 'production') {

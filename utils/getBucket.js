@@ -9,7 +9,7 @@ export default () => {
   const { bucket_slug } = queryString.parse(window.location.search);
   const urlParams = new URLSearchParams(window.location.search);
   const Cosmic = cosmic({
-    token: urlParams.get('access_token')
+    token: urlParams.get('access_token'),
   });
   window.bucket = Cosmic.bucket({ slug: bucket_slug, read_key: urlParams.get('read_key'), write_key: urlParams.get('write_key') });
 
