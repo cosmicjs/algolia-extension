@@ -32,10 +32,10 @@ const HelpTab = ({ classes }) => (
       <p className={classes.p}>
         If the connection to Algolia is successful, the &apos;Indices&apos;,
         &apos;Automatic Syncing&apos;, and &apos;Preview&apos; tabs should become enabled. The
-        &apos;Indices&apos; tab allows you to sync your Cosmic JS Objects with Algolia
+        &apos;Indices&apos; tab allows you to sync your Cosmic Objects with Algolia
         and change your index settings. The &apos;Automatic Syncing&apos; tab allows
         you to sign up for automatic syncing. This keeps your Algolia index
-        up to date whenever you add or edit a Cosmic JS Object. The
+        up to date whenever you add or edit a Cosmic Object. The
         &apos;Preview&apos; tab allows you to test your search.
       </p>
       <p>

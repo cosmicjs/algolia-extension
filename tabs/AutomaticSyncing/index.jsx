@@ -63,12 +63,12 @@ class AutomaticSyncingTab extends Component {
             md={{ offset: 1, size: 10 }}
           >
             <p>
-              Enter your Cosmic JS&nbsp;
+              Enter your Cosmic&nbsp;
               {
                 bucketSlug
                   ? (
                     <a
-                      href={`https://cosmicjs.com/${bucketSlug}/settings/main`}
+                      href={`https://app.cosmicjs.com/${bucketSlug}/settings/main`}
                       rel="noopener noreferrer"
                       target="_blank"
                     >
@@ -79,7 +79,7 @@ class AutomaticSyncingTab extends Component {
               }
               &nbsp;below and click &apos;Enable Automatic
               Syncing&apos; below to update Algolia whenever you add or edit a
-              Cosmic JS Object.
+              Cosmic Object.
             </p>
           </Col>
         </Row>
@@ -92,7 +92,7 @@ class AutomaticSyncingTab extends Component {
               id="bucket-id"
               name="bucketId"
               onChange={this.handleChange}
-              placeholder="Cosmic JS Bucket ID"
+              placeholder="Cosmic Bucket ID"
               type="text"
               value={bucketIdInput}
             />
