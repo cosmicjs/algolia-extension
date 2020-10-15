@@ -22,6 +22,7 @@ export default (cosmicObject) => {
     published_at,
     slug,
     title,
+    type_slug,
   } = cosmicObject;
   const algoliaObject = {
     objectID: _id,
@@ -31,6 +32,7 @@ export default (cosmicObject) => {
     published_at: new Date(published_at).valueOf(),
     slug,
     title,
+    type_slug,
   };
 
   metafields.forEach((metafield) => {
