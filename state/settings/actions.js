@@ -200,8 +200,6 @@ const addWebhooks = () => async (dispatch, getState) => {
       await bucket.addObject(webhooksObject);
     }
 
-    const { bucketId } = getState().settings.data;
-
     await fetch(`${WEBHOOK_API_ENDPOINT}/api/addBucketSlug`, {
       body: JSON.stringify({
         id: bucketId,
