@@ -70,7 +70,7 @@ class AutomaticSyncingTab extends Component {
                     <a
                       href={`https://app.cosmicjs.com/${bucketSlug}/settings/main`}
                       rel="noopener noreferrer"
-                      target="_blank"
+                      target="_parent"
                     >
                       Bucket ID
                     </a>
@@ -103,7 +103,12 @@ class AutomaticSyncingTab extends Component {
           <Row>
             <Col>
               <p className={classes.p}>
-                You have already enabled automatic syncing.
+                You have already enabled automatic syncing. To delete Objects from Algolia, you need to take one more configure step:<br /><br />
+                Go to <a
+                      href={`https://app.cosmicjs.com/${bucketSlug}/webhooks`}
+                      rel="noopener noreferrer"
+                      target="_parent"
+                    >Bucket Settings &gt; Webhooks</a> and find the "Object deleted" Webhook. Replace <code>&lt;ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE&gt;</code> with a comma separated list of your Object Type slugs included as an index in Algolia. Click "Save Webhooks".
               </p>
             </Col>
           </Row>
