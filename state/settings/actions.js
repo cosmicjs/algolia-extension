@@ -166,6 +166,7 @@ const addWebhooks = () => async (dispatch, getState) => {
 
   try {
     const bucket = getBucket();
+    const { bucketId } = getState().settings.data;
     const urlParams = new URLSearchParams(window.location.search);
     const createId = (await bucket.addWebhook({
       endpoint: `${WEBHOOK_API_ENDPOINT}/api/create?read_key=${urlParams.get('read_key')}`,
@@ -178,7 +179,7 @@ const addWebhooks = () => async (dispatch, getState) => {
     })).webhook.id;
 
     const deleteId = (await bucket.addWebhook({
-      endpoint: `${WEBHOOK_API_ENDPOINT}/api/delete?read_key=${urlParams.get('read_key')}`,
+      endpoint: `${WEBHOOK_API_ENDPOINT}/api/delete?read_key=${urlParams.get('read_key')}&bucket=${bucketId}&types=<ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE>`,
       event: 'object.deleted',
     })).webhook.id;
 
