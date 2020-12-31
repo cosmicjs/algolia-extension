@@ -178,6 +178,11 @@ const addWebhooks = () => async (dispatch, getState) => {
       event: 'object.edited.published',
     })).webhook.id;
 
+    const unpublishedId = (await bucket.addWebhook({
+      endpoint: `${WEBHOOK_API_ENDPOINT}/api/delete?read_key=${urlParams.get('read_key')}&bucket=${bucketId}&types=<ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE>`,
+      event: 'object.edited.unpublished',
+    })).webhook.id;
+
     const deleteId = (await bucket.addWebhook({
       endpoint: `${WEBHOOK_API_ENDPOINT}/api/delete?read_key=${urlParams.get('read_key')}&bucket=${bucketId}&types=<ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE>`,
       event: 'object.deleted',
@@ -187,6 +192,7 @@ const addWebhooks = () => async (dispatch, getState) => {
       content: JSON.stringify({
         createId,
         editId,
+        unpublishedId,
         deleteId,
       }),
       slug: 'algolia-info-webhooks',

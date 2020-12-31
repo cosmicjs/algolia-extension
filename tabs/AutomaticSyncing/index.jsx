@@ -108,7 +108,7 @@ class AutomaticSyncingTab extends Component {
                       href={`https://app.cosmicjs.com/${bucketSlug}/webhooks`}
                       rel="noopener noreferrer"
                       target="_parent"
-                    >Bucket Settings &gt; Webhooks</a> and find the "Object deleted" Webhook. Replace <code>&lt;ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE&gt;</code> with a comma separated list of your Object Type slugs included as an index in Algolia. Click "Save Webhooks".
+                    >Bucket Settings &gt; Webhooks</a> and find the "Object deleted" and "Object edited and unpublished" Webhook. Replace <code>&lt;ADD_COMMA_SEPARATED_TYPE_SLUGS_HERE&gt;</code> with a comma separated list of your Object Type slugs included as an index in Algolia. Click "Save Webhooks".
               </p>
             </Col>
           </Row>
