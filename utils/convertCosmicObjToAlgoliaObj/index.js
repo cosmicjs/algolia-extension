@@ -34,7 +34,9 @@ export default (cosmicObject) => {
     title,
     type_slug,
   };
-
+  if (!metafields)
+    return algoliaObject;
+  
   metafields.forEach((metafield) => {
     switch (metafield.type) {
       case 'date':

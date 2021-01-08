@@ -85,7 +85,7 @@ const addCosmicObjectsToAlgolia = async (applicationId, adminApiKey, index) => {
   const algoliaIndex = client.initIndex(index);
   const bucket = getBucket();
   const data = await bucket.getObjects({ type: index, skip: 0 });
-  let objects = data.objects;
+  const objects = data.objects.map(convertCosmicObjToAlgoliaObj);
   const addObjectsRes = await algoliaIndex.addObjects(objects);
   const { taskID } = addObjectsRes;
   await algoliaIndex.waitTask(taskID);
@@ -93,7 +93,8 @@ const addCosmicObjectsToAlgolia = async (applicationId, adminApiKey, index) => {
   if (data.total > 1000) {
     for (let skip = 1000; skip < data.total; skip = skip + 1000) {
       const loop_data = await bucket.getObjects({ type: index, skip: skip });
-      const addObjectsRes = await algoliaIndex.addObjects(loop_data.objects);
+      const objects = loop_data.objects.map(convertCosmicObjToAlgoliaObj);
+      const addObjectsRes = await algoliaIndex.addObjects(objects);
       const { taskID } = addObjectsRes;
       await algoliaIndex.waitTask(taskID);
     }
