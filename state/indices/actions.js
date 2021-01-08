@@ -71,15 +71,7 @@ const syncIndex = index => async (dispatch, getState) => {
 
   try {
     const { applicationId, adminApiKey } = getState().settings.data;
-    const bucket = getBucket();
-    const data = await bucket.getObjects({ type: index });
-    const objects = data.objects.map(convertCosmicObjToAlgoliaObj);
-
-    const client = algoliasearch(applicationId, adminApiKey);
-    const algoliaIndex = client.initIndex(index);
-    const addObjectsRes = await algoliaIndex.addObjects(objects);
-    const { taskID } = addObjectsRes;
-    await algoliaIndex.waitTask(taskID);
+    await addCosmicObjectsToAlgolia(applicationId, adminApiKey, index);
     await dispatch(fetchIndices(applicationId, adminApiKey));
   } catch (e) {
     await dispatch(catchIndicesError(e));
@@ -87,6 +79,26 @@ const syncIndex = index => async (dispatch, getState) => {
 
   return dispatch(finishSync());
 };
+
+const addCosmicObjectsToAlgolia = async (applicationId, adminApiKey, index) => {
+  const client = algoliasearch(applicationId, adminApiKey);
+  const algoliaIndex = client.initIndex(index);
+  const bucket = getBucket();
+  const data = await bucket.getObjects({ type: index, skip: 0 });
+  let objects = data.objects;
+  const addObjectsRes = await algoliaIndex.addObjects(objects);
+  const { taskID } = addObjectsRes;
+  await algoliaIndex.waitTask(taskID);
+  // Pagination
+  if (data.total > 1000) {
+    for (let skip = 1000; skip < data.total; skip = skip + 1000) {
+      const loop_data = await bucket.getObjects({ type: index, skip: skip });
+      const addObjectsRes = await algoliaIndex.addObjects(loop_data.objects);
+      const { taskID } = addObjectsRes;
+      await algoliaIndex.waitTask(taskID);
+    }
+  }
+}
 
 const removeIndex = index => async (dispatch, getState) => {
   dispatch(startSync());
