@@ -72,7 +72,7 @@
     "file-loader": "^1.1.11",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.4.4",
-    "node-sass": "^4.9.0",
+    "node-sass": "^7.0.0",
     "styled-jsx-plugin-sass": "^0.2.4"
   }
 }
