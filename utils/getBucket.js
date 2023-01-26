@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import cosmic from 'cosmicjs';
+import Cosmic from 'cosmicjs';
 
 export default () => {
   if (typeof window === 'undefined') return undefined;
@@ -8,10 +8,11 @@ export default () => {
 
   const { bucket_slug } = queryString.parse(window.location.search);
   const urlParams = new URLSearchParams(window.location.search);
-  const Cosmic = cosmic({
+  const api = Cosmic({
+    version: 'v3',
     token: urlParams.get('access_token'),
   });
-  window.bucket = Cosmic.bucket({ slug: bucket_slug, read_key: urlParams.get('read_key'), write_key: urlParams.get('write_key') });
+  window.bucket = api.bucket({ slug: bucket_slug, read_key: urlParams.get('read_key'), write_key: urlParams.get('write_key') });
 
   return window.bucket;
 };
