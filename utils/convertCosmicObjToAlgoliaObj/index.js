@@ -23,6 +23,7 @@ export default (cosmicObject) => {
     slug,
     title,
     type_slug,
+    locale,
   } = cosmicObject;
   const algoliaObject = {
     objectID: _id,
@@ -33,10 +34,10 @@ export default (cosmicObject) => {
     slug,
     title,
     type_slug,
+    locale,
   };
-  if (!metafields)
-    return algoliaObject;
-  
+  if (!metafields) { return algoliaObject; }
+
   metafields.forEach((metafield) => {
     switch (metafield.type) {
       case 'date':
