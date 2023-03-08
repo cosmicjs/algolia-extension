@@ -4,7 +4,8 @@ import { fetchIndices } from '../indices/actions';
 import getBucket from '../../utils/getBucket';
 
 // const WEBHOOK_API_ENDPOINT = 'https://algolia-search.cosmicapp.co'; OLD URL
-const WEBHOOK_API_ENDPOINT = 'https://algolia-webhook-listener.herokuapp.com';
+// const WEBHOOK_API_ENDPOINT = 'https://algolia-webhook-listener.herokuapp.com'; OLD URL
+const WEBHOOK_API_ENDPOINT = 'https://algolia-webhook-listener.vercel.app';
 
 const actionTypes = {
   CATCH_SETTINGS_ERROR: 'CATCH_SETTINGS_ERROR',
